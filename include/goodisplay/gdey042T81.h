@@ -1,4 +1,5 @@
-// 4.2 b/w/red
+// 4.2 b/w GDEY042T81 https://www.good-display.com/product/386.html
+// Note from GOODISPLAY: The GDEQ042T81 is fully compatible with GDEY042T81
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -15,24 +16,24 @@
 #include <gdew_colors.h>
 #include <esp_timer.h>
 
-// Controller: SSD1619A https://v4.cecdn.yun300.cn/100001_1909185148/SSD1619A.pdf
+// Controller: SSD1683
 
-#define GDEH042Z96_WIDTH 400
-#define GDEH042Z96_HEIGHT 300
-#define GDEH042Z96_BUFFER_SIZE (uint32_t(GDEH042Z96_WIDTH) * uint32_t(GDEH042Z96_HEIGHT) / 8)
-#define IS_COLOR_EPD true
-#define GDEH042Z96_8PIX_BLACK 0x00
-#define GDEH042Z96_8PIX_WHITE 0xFF
-#define GDEH042Z96_8PIX_RED 0xFF
-#define GDEH042Z96_8PIX_RED_WHITE 0x00
+#define GDEY042T81_WIDTH 400
+#define GDEY042T81_HEIGHT 300
+#define GDEY042T81_BUFFER_SIZE (uint32_t(GDEY042T81_WIDTH) * uint32_t(GDEY042T81_HEIGHT) / 8)
 
-// Note: GDEW0213I5F is our test display that will be the default initializing this class
-class Gdeh042Z96 : public Epd
+#define GDEY042T81_8PIX_BLACK 0x00
+#define GDEY042T81_8PIX_WHITE 0xFF
+
+class Gdey042T81 : public Epd
 {
   public:
    
-    Gdeh042Z96(EpdSpi& IO);
-    uint8_t colors_supported = 3;
+    Gdey042T81(EpdSpi& IO);
+    uint8_t colors_supported = 1;
+    
+    uint8_t fastmode = 0; // With 1 it will not go to power off
+    bool is_powered = false;
     
     // EPD tests 
     void init(bool debug = false);
@@ -40,14 +41,13 @@ class Gdeh042Z96 : public Epd
     
     void fillScreen(uint16_t color);
     void update();
+    void deepsleep();
 
   private:
     EpdSpi& IO;
 
-    uint8_t _black_buffer[GDEH042Z96_BUFFER_SIZE];
-    uint8_t _red_buffer[GDEH042Z96_BUFFER_SIZE];
+    uint8_t _black_buffer[GDEY042T81_BUFFER_SIZE];
 
-    bool _initial = true;
     void _wakeUp();
     void _sleep();
     void _waitBusy(const char* message);

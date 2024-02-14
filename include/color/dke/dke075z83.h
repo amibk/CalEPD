@@ -1,4 +1,5 @@
-// 5.83 640*380 b/w/R Controller: IL0371 (3 colors) http://www.e-paper-display.com/download_detail/downloadsId%3d536.html
+// 7.5 800*480 b/w/R DKE: UC8179 Product link: https://www.dke.top/products/fast-refresh-no-flicker-880x528-big-75-inch-epaper-display-e-ink-screene-ink-display
+// Name is like this because it was the first and used same controler as 5.83z83 from GoodDisplay. Real model is: DEPG0750BNU790F32
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -19,18 +20,23 @@
 #include <gdew_colors.h>
 #include <esp_timer.h>
 
-#define GDEW075Z09_WIDTH 640
-#define GDEW075Z09_HEIGHT 384
+#define DKE075Z83_WIDTH 800
+#define DKE075Z83_HEIGHT 480
 #define IS_COLOR_EPD true
-#define GDEW075Z09_BUFFER_SIZE (uint32_t(GDEW075Z09_WIDTH) * uint32_t(GDEW075Z09_HEIGHT) / 8)
+#define DKE075Z83_BUFFER_SIZE (uint32_t(DKE075Z83_WIDTH) * uint32_t(DKE075Z83_HEIGHT) / 8)
+// 8 pix definitions
+#define DKE075Z83_8PIX_BLACK 0x00
+#define DKE075Z83_8PIX_WHITE 0xFF
+#define DKE075Z83_8PIX_RED 0x00
+#define DKE075Z83_8PIX_RED_WHITE 0xFF
 
-#define GDEW075Z09_PU_DELAY 480
+#define DKE075Z83_PU_DELAY 500
 
-class Gdew075z09 : public Epd
+class Dke075Z83 : public Epd
 {
   public:
    
-    Gdew075z09(EpdSpi& IO);
+    Dke075Z83(EpdSpi& IO);
     uint8_t colors_supported = 3;
     
     void init(bool debug = false);
@@ -44,8 +50,8 @@ class Gdew075z09 : public Epd
   private:
     EpdSpi& IO;
 
-    uint8_t _buffer[GDEW075Z09_BUFFER_SIZE];
-    uint8_t _red_buffer[GDEW075Z09_BUFFER_SIZE];
+    uint8_t _black_buffer[DKE075Z83_BUFFER_SIZE];
+    uint8_t _red_buffer[DKE075Z83_BUFFER_SIZE];
     bool _using_partial_mode = false;
     bool _initial = true;
     
@@ -53,11 +59,10 @@ class Gdew075z09 : public Epd
     void _sleep();
     void _waitBusy(const char* message);
     void _rotate(uint16_t& x, uint16_t& y, uint16_t& w, uint16_t& h);
-    void _send8pixel(uint8_t black,uint8_t red);
+    
     // Command & data structs
    
-    static const epd_init_2 epd_wakeup_power;
-    static const epd_init_2 epd_panel_setting;
-    static const epd_init_3 epd_boost;
+    static const epd_init_4 epd_wakeup_power;
+    static const epd_init_1 epd_panel_setting;
     static const epd_init_4 epd_resolution;
 };
